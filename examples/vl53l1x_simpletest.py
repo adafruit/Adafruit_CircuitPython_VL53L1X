@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: Unlicense
 
-# Simple demo of the VL53L0X distance sensor.
+# Simple demo of the VL53L1X distance sensor.
 # Will print the sensed range/distance every second.
 
 import time
