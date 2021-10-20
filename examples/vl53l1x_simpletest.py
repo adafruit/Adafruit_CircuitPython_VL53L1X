@@ -3,6 +3,9 @@
 #
 # SPDX-License-Identifier: Unlicense
 
+# Simple demo of the VL53L0X distance sensor.
+# Will print the sensed range/distance every second.
+
 import time
 import board
 import adafruit_vl53l1x
@@ -24,4 +27,4 @@ while True:
     if vl53.data_ready:
         print("Distance: {} cm".format(vl53.distance))
         vl53.clear_interrupt()
-        time.sleep(0.5)
+        time.sleep(1.0)

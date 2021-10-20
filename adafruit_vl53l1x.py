@@ -16,7 +16,8 @@ Implementation Notes
 
 **Hardware:**
 
-* Adafruit `VL53L1X Time of Flight Distance Sensor - ~30 to 4000mm <https://www.adafruit.com/product/3967>`_
+* Adafruit `VL53L1X Time of Flight Distance Sensor - ~30 to 4000mm
+  <https://www.adafruit.com/product/3967>`_
 
 **Software and Dependencies:**
 
@@ -53,6 +54,7 @@ class VL53L1X:
         self._sensor_init()
 
     def _sensor_init(self):
+        # pylint: disable=line-too-long
         init_seq = bytes(
             [
                 0x00,  # 0x2d : set bit 2 and 5 to 1 for fast plus mode (1MHz I2C), else don't touch
@@ -148,26 +150,26 @@ class VL53L1X:
                 0x00,  # 0x87 : start ranging
             ]
         )
-        self._write_registerN(0x002D, init_seq)
+        self._write_register(0x002D, init_seq)
         self.start_ranging()
         while not self.data_ready:
             time.sleep(0.01)
         self.clear_interrupt()
         self.stop_ranging()
         # not sure what these next two are, but driver has them
-        self._write_registerN(_VL53L1X_VHV_CONFIG__TIMEOUT_MACROP_LOOP_BOUND, b"\x09")
-        self._write_registerN(0x0B, b"\x00")
+        self._write_register(_VL53L1X_VHV_CONFIG__TIMEOUT_MACROP_LOOP_BOUND, b"\x09")
+        self._write_register(0x0B, b"\x00")
 
     @property
     def model_info(self):
         """A 3 tuple of Model ID, Module Type, and Mask Revision."""
-        info = self._read_registerN(_VL53L1X_IDENTIFICATION__MODEL_ID, 3)
+        info = self._read_register(_VL53L1X_IDENTIFICATION__MODEL_ID, 3)
         return (info[0], info[1], info[2])  # Model ID, Module Type, Mask Rev
 
     @property
     def distance(self):
         """The distance in units of centimeters."""
-        dist = self._read_registerN(
+        dist = self._read_register(
             _VL53L1X_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0, 2
         )
         dist = struct.unpack(">H", dist)[0]
@@ -175,21 +177,21 @@ class VL53L1X:
 
     def start_ranging(self):
         """Starts ranging operation."""
-        self._write_registerN(_SYSTEM__MODE_START, b"\x40")
+        self._write_register(_SYSTEM__MODE_START, b"\x40")
 
     def stop_ranging(self):
         """Stopss ranging operation."""
-        self._write_registerN(_SYSTEM__MODE_START, b"\x00")
+        self._write_register(_SYSTEM__MODE_START, b"\x00")
 
     def clear_interrupt(self):
         """Clears new data interrupt."""
-        self._write_registerN(_SYSTEM__INTERRUPT_CLEAR, b"\x01")
+        self._write_register(_SYSTEM__INTERRUPT_CLEAR, b"\x01")
 
     @property
     def data_ready(self):
         """Returns true if new data is ready, otherwise false."""
         if (
-            self._read_registerN(_GPIO__TIO_HV_STATUS)[0] & 0x01
+            self._read_register(_GPIO__TIO_HV_STATUS)[0] & 0x01
             == self._interrupt_polarity
         ):
             return True
@@ -197,17 +199,17 @@ class VL53L1X:
 
     @property
     def _interrupt_polarity(self):
-        int_pol = self._read_registerN(_GPIO_HV_MUX__CTRL)[0] & 0x10
+        int_pol = self._read_register(_GPIO_HV_MUX__CTRL)[0] & 0x10
         int_pol = (int_pol >> 4) & 0x01
         return 0 if int_pol else 1
 
-    def _write_registerN(self, address, data, length=None):
+    def _write_register(self, address, data, length=None):
         if length is None:
             length = len(data)
         with self.i2c_device as i2c:
             i2c.write(struct.pack(">H", address) + data[:length])
 
-    def _read_registerN(self, address, length=1):
+    def _read_register(self, address, length=1):
         data = bytearray(length)
         with self.i2c_device as i2c:
             i2c.write(struct.pack(">H", address))
