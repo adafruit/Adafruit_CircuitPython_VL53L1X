@@ -24,14 +24,10 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
-.. todo:: Add any Learn guide links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
-
 .. toctree::
     :caption: Related Products
 
-.. todo:: Add any product links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+    Adafruit VL53L1X Time of Flight Distance Sensor <https://www.adafruit.com/product/3967>
 
 .. toctree::
     :caption: Other Links
