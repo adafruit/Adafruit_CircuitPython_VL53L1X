@@ -2,3 +2,26 @@
 # SPDX-FileCopyrightText: Copyright (c) 2021 Carter Nelson for Adafruit Industries
 #
 # SPDX-License-Identifier: Unlicense
+
+import time
+import board
+import adafruit_vl53l1x
+
+i2c = board.I2C()
+
+vl53 = adafruit_vl53l1x.VL53L1X(i2c)
+
+print("VL53L1X Simple Test.")
+print("--------------------")
+model_id, module_type, mask_rev = vl53.model_info
+print("Model ID: 0x{:0x}".format(model_id))
+print("Model ID: 0x{:0x}".format(model_id))
+print("Model ID: 0x{:0x}".format(model_id))
+
+vl53.start_ranging()
+
+while True:
+    if vl53.data_ready:
+        print("Distance: {} cm".format(vl53.distance))
+        vl53.clear_interrupt()
+        time.sleep(0.5)
