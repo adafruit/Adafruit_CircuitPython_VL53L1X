@@ -14,12 +14,25 @@ i2c = board.I2C()
 
 vl53 = adafruit_vl53l1x.VL53L1X(i2c)
 
+# OPTIONAL: can set non-default values
+vl53.distance_mode = 1
+vl53.timing_budget = 100
+
 print("VL53L1X Simple Test.")
 print("--------------------")
 model_id, module_type, mask_rev = vl53.model_info
-print("Model ID: 0x{:0x}".format(model_id))
-print("Model ID: 0x{:0x}".format(model_id))
-print("Model ID: 0x{:0x}".format(model_id))
+print("Model ID: 0x{:0X}".format(model_id))
+print("Module Type: 0x{:0X}".format(module_type))
+print("Mask Revision: 0x{:0X}".format(mask_rev))
+print("Distance Mode: ", end="")
+if vl53.distance_mode == 1:
+    print("SHORT")
+elif vl53.distance_mode == 2:
+    print("LONG")
+else:
+    print("UNKOWN")
+print("Timing Budget: {}".format(vl53.timing_budget))
+print("--------------------")
 
 vl53.start_ranging()
 
