@@ -80,9 +80,9 @@ class VL53L1X:
         model_id, module_type, mask_rev = self.model_info
         if model_id != 0xEA or module_type != 0xCC or mask_rev != 0x10:
             raise RuntimeError("Wrong sensor ID or type!")
+        self._sensor_init()
         self._timing_budget = None
         self.timing_budget = 50
-        self._sensor_init()
 
     def _sensor_init(self):
         # pylint: disable=line-too-long
