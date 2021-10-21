@@ -232,7 +232,7 @@ class VL53L1X:
         """Ranging duration in milliseconds. Increasing the timing budget
         increases the maximum distance the device can range and improves
         the repeatability error. However, average power consumption augments
-        accordingly. 15*, 20, 33, 50, 100, 200, 500. (*short mode only)"""
+        accordingly. ms = 15 (short mode only), 20, 33, 50, 100, 200, 500."""
         return self._timing_budget
 
     @timing_budget.setter
