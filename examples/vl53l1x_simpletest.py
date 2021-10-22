@@ -30,7 +30,7 @@ if vl53.distance_mode == 1:
 elif vl53.distance_mode == 2:
     print("LONG")
 else:
-    print("UNKOWN")
+    print("UNKNOWN")
 print("Timing Budget: {}".format(vl53.timing_budget))
 print("--------------------")
 
