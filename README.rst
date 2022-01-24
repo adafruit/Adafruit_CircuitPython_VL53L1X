@@ -3,7 +3,7 @@ Introduction
 
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-vl53l1x/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/vl53l1x/en/latest/
+    :target: https://docs.circuitpython.org/projects/vl53l1x/en/latest/
     :alt: Documentation Status
 
 
