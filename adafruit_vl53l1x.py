@@ -301,7 +301,7 @@ class VL53L1X:
             i2c.write(struct.pack(">H", address))
             i2c.readinto(data)
         return data
-    
+
     def set_address(self, i2c, new_address):
         """Set a new I2C address to the instantaited object. This is only called when using
         multiple VL53L0X sensors on the same I2C bus (SDA & SCL pins). See also the
@@ -314,6 +314,6 @@ class VL53L1X:
             on the same I2C bus are in their off state by pulling the "SHDN" pins LOW. When the
             "SHDN" pin is pulled HIGH again the default I2C address is ``0x29``.
         """
-        new_addres_as_byte_string = new_address.to_bytes(1, 'little')
-        self._write_register(0x01,new_addres_as_byte_string)
-        self.i2c_device = i2c_device.I2CDevice(i2c,new_address)
+        new_addres_as_byte_string = new_address.to_bytes(1, "little")
+        self._write_register(0x01, new_addres_as_byte_string)
+        self.i2c_device = i2c_device.I2CDevice(i2c, new_address)
