@@ -77,6 +77,7 @@ class VL53L1X:
 
     def __init__(self, i2c, address=41):
         self.i2c_device = i2c_device.I2CDevice(i2c, address)
+        self._i2c = i2c
         model_id, module_type, mask_rev = self.model_info
         if model_id != 0xEA or module_type != 0xCC or mask_rev != 0x10:
             raise RuntimeError("Wrong sensor ID or type!")
@@ -302,7 +303,7 @@ class VL53L1X:
             i2c.readinto(data)
         return data
 
-    def set_address(self, i2c, new_address):
+    def set_address(self, new_address):
         """
         Set a new I2C address to the instantaited object. This is only called when using
         multiple VL53L0X sensors on the same I2C bus (SDA & SCL pins). See also the
@@ -310,4 +311,4 @@ class VL53L1X:
         """
         new_addres_as_byte_string = new_address.to_bytes(1, "little")
         self._write_register(0x01, new_addres_as_byte_string)
-        self.i2c_device = i2c_device.I2CDevice(i2c, new_address)
+        self.i2c_device = i2c_device.I2CDevice(self._i2c, new_address)
