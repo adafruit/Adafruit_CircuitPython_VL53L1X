@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021 wrdaigle for Adafruit Industries
+# SPDX-FileCopyrightText: 2022 wrdaigle for Adafruit Industries
 #
 # SPDX-License-Identifier: MIT
 
@@ -44,9 +44,7 @@ for i, power_pin in enumerate(xshut):
     # no need to change the address of the last VL53L1X sensor
     if i < len(xshut) - 1:
         # default address is 0x29. Change that to something else
-        vl53[i].set_address(
-            i + 0x30
-        )  # address assigned should NOT be already in use
+        vl53[i].set_address(i + 0x30)  # address assigned should NOT be already in use
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
 # https://learn.adafruit.com/i2c-addresses/the-list
 # According to this list 0x30-0x34 are available, although the list may be incomplete.
