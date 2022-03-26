@@ -34,6 +34,7 @@ from micropython import const
 # imports__version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_VL53L1X.git"
 
+_VL53L1X_I2C_SLAVE_DEVICE_ADDRESS = const(0x0001)
 _VL53L1X_VHV_CONFIG__TIMEOUT_MACROP_LOOP_BOUND = const(0x0008)
 _GPIO_HV_MUX__CTRL = const(0x0030)
 _GPIO__TIO_HV_STATUS = const(0x0031)
@@ -309,6 +310,7 @@ class VL53L1X:
         multiple VL53L0X sensors on the same I2C bus (SDA & SCL pins). See also the
         `example <examples.html#multiple-vl53l1x-on-same-i2c-bus>`_ for proper usage.
         """
-        new_addres_as_byte_string = new_address.to_bytes(1, "little")
-        self._write_register(0x01, new_addres_as_byte_string)
+        self._write_register(
+            _VL53L1X_I2C_SLAVE_DEVICE_ADDRESS, struct.pack(">B", new_address)
+        )
         self.i2c_device = i2c_device.I2CDevice(self._i2c, new_address)
