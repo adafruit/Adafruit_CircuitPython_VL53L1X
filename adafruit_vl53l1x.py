@@ -34,6 +34,7 @@ from micropython import const
 # imports__version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_VL53L1X.git"
 
+_VL53L1X_I2C_SLAVE_DEVICE_ADDRESS = const(0x0001)
 _VL53L1X_VHV_CONFIG__TIMEOUT_MACROP_LOOP_BOUND = const(0x0008)
 _GPIO_HV_MUX__CTRL = const(0x0030)
 _GPIO__TIO_HV_STATUS = const(0x0031)
@@ -77,6 +78,7 @@ class VL53L1X:
 
     def __init__(self, i2c, address=41):
         self.i2c_device = i2c_device.I2CDevice(i2c, address)
+        self._i2c = i2c
         model_id, module_type, mask_rev = self.model_info
         if model_id != 0xEA or module_type != 0xCC or mask_rev != 0x10:
             raise RuntimeError("Wrong sensor ID or type!")
@@ -301,3 +303,14 @@ class VL53L1X:
             i2c.write(struct.pack(">H", address))
             i2c.readinto(data)
         return data
+
+    def set_address(self, new_address):
+        """
+        Set a new I2C address to the instantaited object. This is only called when using
+        multiple VL53L0X sensors on the same I2C bus (SDA & SCL pins). See also the
+        `example <examples.html#multiple-vl53l1x-on-same-i2c-bus>`_ for proper usage.
+        """
+        self._write_register(
+            _VL53L1X_I2C_SLAVE_DEVICE_ADDRESS, struct.pack(">B", new_address)
+        )
+        self.i2c_device = i2c_device.I2CDevice(self._i2c, new_address)
