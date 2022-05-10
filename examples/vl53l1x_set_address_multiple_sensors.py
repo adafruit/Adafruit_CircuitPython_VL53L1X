@@ -20,8 +20,9 @@ import adafruit_vl53l1x
 i2c = board.I2C()
 
 xshut = [
+    # Update the D6 and D5 pins to match the pins to which you wired your sensor XSHUT pins.
     digitalio.DigitalInOut(board.D6),
-    digitalio.DigitalInOut(board.D25),
+    digitalio.DigitalInOut(board.D5),
     # Add more VL53L1X sensors by defining their XSHUT pins here.
 ]
 
