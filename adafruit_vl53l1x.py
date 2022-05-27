@@ -48,6 +48,7 @@ _SD_CONFIG__WOI_SD0 = const(0x0078)
 _SD_CONFIG__INITIAL_PHASE_SD0 = const(0x007A)
 _SYSTEM__INTERRUPT_CLEAR = const(0x0086)
 _SYSTEM__MODE_START = const(0x0087)
+_VL53L1X_RESULT__RANGE_STATUS = const(0x0089)
 _VL53L1X_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0 = const(0x0096)
 _VL53L1X_IDENTIFICATION__MODEL_ID = const(0x010F)
 
@@ -201,6 +202,8 @@ class VL53L1X:
     @property
     def distance(self):
         """The distance in units of centimeters."""
+        if self._read_register(_VL53L1X_RESULT__RANGE_STATUS)[0] != 0x09:
+            return None
         dist = self._read_register(
             _VL53L1X_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0, 2
         )
