@@ -12,7 +12,7 @@ requires = [
 [project]
 name = "adafruit-circuitpython-vl53l1x"
 description = "CircuitPython module for interacting with the VL53L1X distance sensor."
-version = "0.0.0-auto.0"
+version = "0.0.0+auto.0"
 readme = "README.rst"
 authors = [
     {name = "Adafruit Industries", email = "circuitpython@adafruit.com"}
