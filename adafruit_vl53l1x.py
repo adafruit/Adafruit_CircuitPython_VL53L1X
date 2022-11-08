@@ -250,7 +250,7 @@ class VL53L1X:
             reg_vals = TB_LONG_DIST
         if reg_vals is None:
             raise RuntimeError("Unknown distance mode.")
-        if val not in reg_vals.keys():
+        if val not in reg_vals:
             raise ValueError("Invalid timing budget.")
         self._write_register(_RANGE_CONFIG__TIMEOUT_MACROP_A_HI, reg_vals[val][0])
         self._write_register(_RANGE_CONFIG__TIMEOUT_MACROP_B_HI, reg_vals[val][1])
