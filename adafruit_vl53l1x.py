@@ -237,7 +237,8 @@ class VL53L1X:
         """Ranging duration in milliseconds. Increasing the timing budget
         increases the maximum distance the device can range and improves
         the repeatability error. However, average power consumption augments
-        accordingly. ms = 15 (short mode only), 20, 33, 50, 100, 200, 500."""
+        accordingly. ms = 15 (short mode only), 20, 33, 50, 100, 200, 500.
+        Defaults to 50."""
         return self._timing_budget
 
     @timing_budget.setter
@@ -264,7 +265,7 @@ class VL53L1X:
 
     @property
     def distance_mode(self):
-        """The distance mode. 1=short, 2=long."""
+        """The distance mode. 1=short (up to 136cm) , 2=long (up to 360cm)."""
         mode = self._read_register(_PHASECAL_CONFIG__TIMEOUT_MACROP)[0]
         if mode == 0x14:
             return 1  # short distance
