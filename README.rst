@@ -85,7 +85,7 @@ following command to install:
 
 .. code-block:: shell
 
-    circup install vl53l1x
+    circup install adafruit_vl53l1x
 
 Or the following command to update an existing version:
 
