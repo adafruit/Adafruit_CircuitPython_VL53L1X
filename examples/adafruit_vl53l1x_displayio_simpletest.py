@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Tim Cocks for Adafruit Industries 
+# SPDX-FileCopyrightText: 2024 Tim Cocks for Adafruit Industries
 # contributions by J Fletcher, adapting code by Prof Gallaugher:
 #           https://www.youtube.com/watch?v=cdx1A1xoEWc&t=5s
 # tested on ESP32-S3 Reverse TFT Feather:
@@ -17,7 +17,8 @@ main_group = Group()
 
 # Create sensor object, communicating over the board's default I2C bus
 # i2c = board.I2C()  # uses board.SCL and board.SDA
-i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
+i2c = board.STEMMA_I2C()
+# For using the built-in STEMMA QT connector on a microcontroller
 vl53 = adafruit_vl53l1x.VL53L1X(i2c)
 
 # Create a Label to show the readings. If you have a very small
@@ -34,7 +35,7 @@ main_group.append(display_output_label)
 # set the main_group as the root_group of the built-in DISPLAY
 board.DISPLAY.root_group = main_group
 # create a display object placeholder to be updated by the loop
-screen = (f"Distance: {''}cm, {''}in, {''}ft")
+screen = f"Distance: {''}cm, {''}in, {''}ft"
 # initiate repeated sensor readings
 vl53.start_ranging()
 
@@ -45,19 +46,22 @@ while True:
     # Assuming the first 'try' succeeds, this will be updated once the loop starts over
     display_output_label.text = screen
 
-    # This 'try' sequence will either update the displayed items with fresh data or repeat the 
-    # last available data. VL53L1X sensors output `None` when no object reflects the laser, 
+    # This 'try' sequence will either update the displayed items with fresh data or repeat the
+    # last available data. VL53L1X sensors output `None` when no object reflects the laser,
     # e.g., there is nothing within 4 meters, or when objects pass too quickly in and out of
     # view (usually perpendicular to the field of vision).
     try:
-        if vl53.distance: # simple test to see there is a value to read; no value = exception
-            distance = vl53.distance # sets the variable (used by the display) to the sensor data
-            inches = distance*0.394 # VL53L1X outputs distance in metric, so we convert to imperial
-            screen = (f"Distance: {distance: .1f}cm, {inches: .1f}in, {inches/12: .1f}ft")
+        if vl53.distance:
+            # simple test to see there is a value to read; no value = exception
+            distance = vl53.distance
+            # sets the variable (used by the display) to the sensor data
+            inches = distance * 0.394
+            # VL53L1X outputs distance in metric, so we convert to imperial
+            screen = f"Distance: {distance: .1f}cm, {inches: .1f}in, {inches/12: .1f}ft"
             # if we made it this far, we have new data to display!
-    except TypeError: 
+    except TypeError:
         repeat_screen = screen
         screen = repeat_screen
         # if things went sideways, we repeat the previous loop's data so we can try again
-    
+
     time.sleep(0.25)
