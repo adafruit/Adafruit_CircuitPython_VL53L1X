@@ -31,7 +31,7 @@ import struct
 from adafruit_bus_device import i2c_device
 from micropython import const
 
-__version__ = "0.0.0+auto.0"
+__version__ = "1.1.14"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_VL53L1X.git"
 
 _VL53L1X_I2C_SLAVE_DEVICE_ADDRESS = const(0x0001)
@@ -46,6 +46,8 @@ _RANGE_CONFIG__VCSEL_PERIOD_B = const(0x0063)
 _RANGE_CONFIG__VALID_PHASE_HIGH = const(0x0069)
 _SD_CONFIG__WOI_SD0 = const(0x0078)
 _SD_CONFIG__INITIAL_PHASE_SD0 = const(0x007A)
+_ROI_CONFIG__USER_ROI_CENTRE_SPAD = const(0x007F)
+_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE = const(0x0080)
 _SYSTEM__INTERRUPT_CLEAR = const(0x0086)
 _SYSTEM__MODE_START = const(0x0087)
 _VL53L1X_RESULT__RANGE_STATUS = const(0x0089)
@@ -294,7 +296,35 @@ class VL53L1X:
         else:
             raise ValueError("Unsupported mode.")
         self.timing_budget = self._timing_budget
+        
+    def set_roi(self, x, y):
+        optical_center = 0
 
+        if x > 16:
+            x = 16
+        if y > 16:
+            y = 16
+        if x > 10 or y > 10:
+            optical_center = 199
+            
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes());
+        self._write_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE, ((y - 1) << 4 | (x - 1)).to_bytes())
+                                     
+    def get_roi(self):
+        temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE);
+        
+        x = (int.from_bytes(temp) & 0x0F) + 1
+        y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
+        
+        return x, y
+    
+    def set_roi_center(self, center):
+       self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
+       
+    def get_roi_center(self):
+       temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
+       return int.from_bytes(temp)
+    
     def _write_register(self, address, data, length=None):
         if length is None:
             length = len(data)
