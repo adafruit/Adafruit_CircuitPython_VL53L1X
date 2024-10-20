@@ -308,7 +308,8 @@ class VL53L1X:
         return x, y
 
     @roi_xy.setter
-    def roi_xy(self, x, y):
+    def roi_xy(self, data):
+        x, y = data
         optical_center = 0
 
         x = min(x, 16)
