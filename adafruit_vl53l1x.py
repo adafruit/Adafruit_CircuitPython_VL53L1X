@@ -317,6 +317,7 @@ class VL53L1X:
 
     @property
     def get_roi_xy(self):
+        """Returns the x and y coordinates of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
 
         x = (int.from_bytes(temp) & 0x0F) + 1
@@ -330,6 +331,7 @@ class VL53L1X:
 
     @property
     def get_roi_center(self):
+        """Returns the center of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
         return int.from_bytes(temp)
 
