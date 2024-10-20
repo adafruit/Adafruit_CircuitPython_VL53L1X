@@ -307,28 +307,33 @@ class VL53L1X:
             y = 16
         if x > 10 or y > 10:
             optical_center = 199
-            
-        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes());
-        self._write_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE, ((y - 1) << 4 | (x - 1)).to_bytes())
+
+        self._write_register(
+            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes()
+        )
+        self._write_register(
+            _ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE,
+            ((y - 1) << 4 | (x - 1)).to_bytes(),
+        )
 
     @property
     def roi_xy(self):
-        temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE);
-        
+        temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
+
         x = (int.from_bytes(temp) & 0x0F) + 1
         y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
-        
+
         return x, y
 
     @roi_center.setter
     def roi_center(self, center):
-       self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
 
     @property
     def roi_center(self):
-       temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
-       return int.from_bytes(temp)
-    
+        temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
+        return int.from_bytes(temp)
+
     def _write_register(self, address, data, length=None):
         if length is None:
             length = len(data)
@@ -352,3 +357,4 @@ class VL53L1X:
             _VL53L1X_I2C_SLAVE_DEVICE_ADDRESS, struct.pack(">B", new_address)
         )
         self.i2c_device = i2c_device.I2CDevice(self._i2c, new_address)
+
