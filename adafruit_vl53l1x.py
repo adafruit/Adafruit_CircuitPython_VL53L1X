@@ -297,14 +297,13 @@ class VL53L1X:
             raise ValueError("Unsupported mode.")
         self.timing_budget = self._timing_budget
 
-    @roi_xy.setter
-    def roi_xy(self, x, y):
+    @set_roi_xy.setter
+    def set_roi_xy(self, x, y):
         optical_center = 0
 
-        if x > 16:
-            x = 16
-        if y > 16:
-            y = 16
+        x = min(x, 16)
+        y = min(y, 16)
+
         if x > 10 or y > 10:
             optical_center = 199
 
@@ -317,7 +316,7 @@ class VL53L1X:
         )
 
     @property
-    def roi_xy(self):
+    def get_roi_xy(self):
         temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
 
         x = (int.from_bytes(temp) & 0x0F) + 1
@@ -325,12 +324,12 @@ class VL53L1X:
 
         return x, y
 
-    @roi_center.setter
-    def roi_center(self, center):
+    @set_roi_center.setter
+    def set_roi_center(self, center):
         self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
 
     @property
-    def roi_center(self):
+    def get_roi_center(self):
         temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
         return int.from_bytes(temp)
 
