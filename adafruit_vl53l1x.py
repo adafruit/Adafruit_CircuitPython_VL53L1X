@@ -297,6 +297,16 @@ class VL53L1X:
             raise ValueError("Unsupported mode.")
         self.timing_budget = self._timing_budget
 
+    @property
+    def get_roi_xy(self):
+        """Returns the x and y coordinates of the sensor's region of interest"""
+        temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
+
+        x = (int.from_bytes(temp) & 0x0F) + 1
+        y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
+
+        return x, y
+
     @set_roi_xy.setter
     def set_roi_xy(self, x, y):
         optical_center = 0
@@ -316,24 +326,14 @@ class VL53L1X:
         )
 
     @property
-    def get_roi_xy(self):
-        """Returns the x and y coordinates of the sensor's region of interest"""
-        temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
-
-        x = (int.from_bytes(temp) & 0x0F) + 1
-        y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
-
-        return x, y
-
-    @set_roi_center.setter
-    def set_roi_center(self, center):
-        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
-
-    @property
     def get_roi_center(self):
         """Returns the center of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
         return int.from_bytes(temp)
+
+    @set_roi_center.setter
+    def set_roi_center(self, center):
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
 
     def _write_register(self, address, data, length=None):
         if length is None:
