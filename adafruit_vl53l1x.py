@@ -357,4 +357,3 @@ class VL53L1X:
             _VL53L1X_I2C_SLAVE_DEVICE_ADDRESS, struct.pack(">B", new_address)
         )
         self.i2c_device = i2c_device.I2CDevice(self._i2c, new_address)
-
