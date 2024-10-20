@@ -298,7 +298,7 @@ class VL53L1X:
         self.timing_budget = self._timing_budget
 
     @property
-    def get_roi_xy(self):
+    def roi_xy(self):
         """Returns the x and y coordinates of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
 
@@ -307,8 +307,8 @@ class VL53L1X:
 
         return x, y
 
-    @set_roi_xy.setter
-    def set_roi_xy(self, x, y):
+    @roi_xy.setter
+    def roi_xy(self, x, y):
         optical_center = 0
 
         x = min(x, 16)
@@ -326,13 +326,13 @@ class VL53L1X:
         )
 
     @property
-    def get_roi_center(self):
+    def roi_center(self):
         """Returns the center of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
         return int.from_bytes(temp)
 
-    @set_roi_center.setter
-    def set_roi_center(self, center):
+    @roi_center.setter
+    def roi_center(self, center):
         self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
 
     def _write_register(self, address, data, length=None):
