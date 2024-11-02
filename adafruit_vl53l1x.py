@@ -46,6 +46,8 @@ _RANGE_CONFIG__VCSEL_PERIOD_B = const(0x0063)
 _RANGE_CONFIG__VALID_PHASE_HIGH = const(0x0069)
 _SD_CONFIG__WOI_SD0 = const(0x0078)
 _SD_CONFIG__INITIAL_PHASE_SD0 = const(0x007A)
+_ROI_CONFIG__USER_ROI_CENTRE_SPAD = const(0x007F)
+_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE = const(0x0080)
 _SYSTEM__INTERRUPT_CLEAR = const(0x0086)
 _SYSTEM__MODE_START = const(0x0087)
 _VL53L1X_RESULT__RANGE_STATUS = const(0x0089)
@@ -294,6 +296,45 @@ class VL53L1X:
         else:
             raise ValueError("Unsupported mode.")
         self.timing_budget = self._timing_budget
+
+    @property
+    def roi_xy(self):
+        """Returns the x and y coordinates of the sensor's region of interest"""
+        temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
+
+        x = (int.from_bytes(temp) & 0x0F) + 1
+        y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
+
+        return x, y
+
+    @roi_xy.setter
+    def roi_xy(self, data):
+        x, y = data
+        optical_center = 0
+
+        x = min(x, 16)
+        y = min(y, 16)
+
+        if x > 10 or y > 10:
+            optical_center = 199
+
+        self._write_register(
+            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes()
+        )
+        self._write_register(
+            _ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE,
+            ((y - 1) << 4 | (x - 1)).to_bytes(),
+        )
+
+    @property
+    def roi_center(self):
+        """Returns the center of the sensor's region of interest"""
+        temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
+        return int.from_bytes(temp)
+
+    @roi_center.setter
+    def roi_center(self, center):
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
 
     def _write_register(self, address, data, length=None):
         if length is None:
