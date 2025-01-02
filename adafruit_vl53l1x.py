@@ -301,9 +301,8 @@ class VL53L1X:
     def roi_xy(self):
         """Returns the x and y coordinates of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
-
-        x = (int.from_bytes(temp) & 0x0F) + 1
-        y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
+        x = (int.from_bytes(temp, 'little') & 0x0F) + 1
+        y = ((int.from_bytes(temp, 'little') & 0xF0) >> 4) + 1
 
         return x, y
 
@@ -319,22 +318,22 @@ class VL53L1X:
             optical_center = 199
 
         self._write_register(
-            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes()
+            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes(1,'little')
         )
         self._write_register(
             _ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE,
-            ((y - 1) << 4 | (x - 1)).to_bytes(),
+            ((y - 1) << 4 | (x - 1)).to_bytes(1,'little'),
         )
 
     @property
     def roi_center(self):
         """Returns the center of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
-        return int.from_bytes(temp)
+        return int.from_bytes(temp, 'little')
 
     @roi_center.setter
     def roi_center(self, center):
-        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes(1,'little'))
 
     def _write_register(self, address, data, length=None):
         if length is None:
