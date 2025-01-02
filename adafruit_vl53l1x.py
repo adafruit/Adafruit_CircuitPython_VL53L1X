@@ -318,11 +318,11 @@ class VL53L1X:
             optical_center = 199
 
         self._write_register(
-            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes(1,"little")
+            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes(1, "little")
         )
         self._write_register(
             _ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE,
-            ((y - 1) << 4 | (x - 1)).to_bytes(1,"little"),
+            ((y - 1) << 4 | (x - 1)).to_bytes(1, "little"),
         )
 
     @property
@@ -333,7 +333,9 @@ class VL53L1X:
 
     @roi_center.setter
     def roi_center(self, center):
-        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes(1,'little'))
+        self._write_register(
+            _ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes(1, "little")
+        )
 
     def _write_register(self, address, data, length=None):
         if length is None:
