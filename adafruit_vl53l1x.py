@@ -301,7 +301,7 @@ class VL53L1X:
     def roi_xy(self):
         """Returns the x and y coordinates of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
-        x = (int.from_bytes(temp, 'little') & 0x0F) + 1
+        x = (int.from_bytes(temp) & 0x0F) + 1
         y = ((int.from_bytes(temp, 'little') & 0xF0) >> 4) + 1
 
         return x, y
