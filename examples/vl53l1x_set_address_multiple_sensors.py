@@ -12,8 +12,10 @@ The typical current consumption during active range readings is about 19 mA per 
 """
 
 import time
+
 import board
 import digitalio
+
 import adafruit_vl53l1x
 
 # Define the I2C pins.
@@ -64,6 +66,6 @@ while True:
     # the sensor distance readings for all available sensors.
     for sensor_number, sensor in enumerate(vl53l1x):
         if sensor.data_ready:
-            print("Sensor {}: {}".format(sensor_number + 1, sensor.distance))
+            print(f"Sensor {sensor_number + 1}: {sensor.distance}")
             sensor.clear_interrupt()
     time.sleep(0.5)
