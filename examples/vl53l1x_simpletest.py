@@ -7,7 +7,9 @@
 # Will print the sensed range/distance every second.
 
 import time
+
 import board
+
 import adafruit_vl53l1x
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
@@ -22,9 +24,9 @@ vl53.timing_budget = 100
 print("VL53L1X Simple Test.")
 print("--------------------")
 model_id, module_type, mask_rev = vl53.model_info
-print("Model ID: 0x{:0X}".format(model_id))
-print("Module Type: 0x{:0X}".format(module_type))
-print("Mask Revision: 0x{:0X}".format(mask_rev))
+print(f"Model ID: 0x{model_id:0X}")
+print(f"Module Type: 0x{module_type:0X}")
+print(f"Mask Revision: 0x{mask_rev:0X}")
 print("Distance Mode: ", end="")
 if vl53.distance_mode == 1:
     print("SHORT")
@@ -32,13 +34,13 @@ elif vl53.distance_mode == 2:
     print("LONG")
 else:
     print("UNKNOWN")
-print("Timing Budget: {}".format(vl53.timing_budget))
+print(f"Timing Budget: {vl53.timing_budget}")
 print("--------------------")
 
 vl53.start_ranging()
 
 while True:
     if vl53.data_ready:
-        print("Distance: {} cm".format(vl53.distance))
+        print(f"Distance: {vl53.distance} cm")
         vl53.clear_interrupt()
         time.sleep(1.0)
