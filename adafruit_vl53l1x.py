@@ -297,8 +297,8 @@ class VL53L1X:
         """Returns the x and y coordinates of the sensor's region of interest"""
         temp = self._read_register(_ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE)
 
-        x = (int.from_bytes(temp) & 0x0F) + 1
-        y = ((int.from_bytes(temp) & 0xF0) >> 4) + 1
+        x = (int.from_bytes(temp, "big") & 0x0F) + 1
+        y = ((int.from_bytes(temp, "big") & 0xF0) >> 4) + 1
 
         return x, y
 
@@ -313,21 +313,46 @@ class VL53L1X:
         if x > 10 or y > 10:
             optical_center = 199
 
-        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes())
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, optical_center.to_bytes(1, "big"))
         self._write_register(
             _ROI_CONFIG__USER_ROI_REQUESTED_GLOBAL_XY_SIZE,
-            ((y - 1) << 4 | (x - 1)).to_bytes(),
-        )  # noqa: E501
+            ((y - 1) << 4 | (x - 1)).to_bytes(1, "big"),
+        )
 
     @property
     def roi_center(self):
-        """Returns the center of the sensor's region of interest"""
+        """The center of the sensor's region of interest.
+        To set the center, set the pad that is to the right and above the
+        exact center of the region you'd like to measure as your opticalCenter.
+        You must change the roi_xy value to somtheing smaller than 16x16
+        in order to use any center value other than 199.
+
+        .. code-block::
+
+            128,136,144,152,160,168,176,184,  192,200,208,216,224,232,240,248
+            129,137,145,153,161,169,177,185,  193,201,209,217,225,233,241,249
+            130,138,146,154,162,170,178,186,  194,202,210,218,226,234,242,250
+            131,139,147,155,163,171,179,187,  195,203,211,219,227,235,243,251
+            132,140,148,156,164,172,180,188,  196,204,212,220,228,236,244,252
+            133,141,149,157,165,173,181,189,  197,205,213,221,229,237,245,253
+            134,142,150,158,166,174,182,190,  198,206,214,222,230,238,246,254
+            135,143,151,159,167,175,183,191,  199,207,215,223,231,239,247,255
+
+            127,119,111,103, 95, 87, 79, 71,  63, 55, 47, 39, 31, 23, 15, 7
+            126,118,110,102, 94, 86, 78, 70,  62, 54, 46, 38, 30, 22, 14, 6
+            125,117,109,101, 93, 85, 77, 69,  61, 53, 45, 37, 29, 21, 13, 5
+            124,116,108,100, 92, 84, 76, 68,  60, 52, 44, 36, 28, 20, 12, 4
+            123,115,107, 99, 91, 83, 75, 67,  59, 51, 43, 35, 27, 19, 11, 3
+            122,114,106, 98, 90, 82, 74, 66,  58, 50, 42, 34, 26, 18, 10, 2
+            121,113,105, 97, 89, 81, 73, 65,  57, 49, 41, 33, 25, 17, 9, 1
+            120,112,104, 96, 88, 80, 72, 64,  56, 48, 40, 32, 24, 16, 8, 0
+        """
         temp = self._read_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD)
-        return int.from_bytes(temp)
+        return int.from_bytes(temp, "big")
 
     @roi_center.setter
     def roi_center(self, center):
-        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes())
+        self._write_register(_ROI_CONFIG__USER_ROI_CENTRE_SPAD, center.to_bytes(1, "big"))
 
     def _write_register(self, address, data, length=None):
         if length is None:
