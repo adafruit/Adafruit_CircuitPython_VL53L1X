@@ -59,7 +59,7 @@ while True:
             # sets the variable (used by the display) to the sensor data
             inches = distance * 0.394
             # VL53L1X outputs distance in metric, so we convert to imperial
-            screen = f"Distance: {distance: .1f}cm, {inches: .1f}in, {inches/12: .1f}ft"
+            screen = f"Distance: {distance: .1f}cm, {inches: .1f}in, {inches / 12: .1f}ft"
             # if we made it this far, we have new data to display!
     except TypeError:
         repeat_screen = screen
